@@ -11,7 +11,7 @@ import time
 from collections.abc import Iterator, Mapping, Sequence
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Protocol, TypeVar, runtime_checkable
+from typing import Protocol, TypeVar, cast, runtime_checkable
 from weakref import WeakValueDictionary
 
 from polyhorizon.canonical import domain_digest, require_identifier, to_jsonable
@@ -32,6 +32,13 @@ _WINDOWS_RESERVED_NAMES = {
     *(f"com{number}" for number in range(1, 10)),
     *(f"lpt{number}" for number in range(1, 10)),
 }
+
+
+class _WindowsFileLock(Protocol):
+    LK_NBLCK: int
+    LK_UNLCK: int
+
+    def locking(self, descriptor: int, mode: int, byte_count: int) -> None: ...
 
 
 @runtime_checkable
@@ -59,7 +66,7 @@ def _lock_descriptor(descriptor: int) -> None:
         fcntl.flock(descriptor, fcntl.LOCK_EX)
         return
 
-    import msvcrt
+    msvcrt = cast(_WindowsFileLock, importlib.import_module("msvcrt"))
 
     while True:
         try:
@@ -77,8 +84,7 @@ def _unlock_descriptor(descriptor: int) -> None:
         fcntl.flock(descriptor, fcntl.LOCK_UN)
         return
 
-    import msvcrt
-
+    msvcrt = cast(_WindowsFileLock, importlib.import_module("msvcrt"))
     msvcrt.locking(descriptor, msvcrt.LK_UNLCK, 1)
 
 
