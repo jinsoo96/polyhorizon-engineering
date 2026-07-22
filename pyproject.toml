@@ -1,0 +1,84 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "polyhorizon-engineering"
+dynamic = ["version"]
+description = "A transport-neutral engine for governing consequences across plural horizons"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+  { name = "Jinsoo Kim" },
+]
+keywords = [
+  "ai-agents",
+  "agent-governance",
+  "horizon-engineering",
+  "multi-agent-systems",
+  "self-improving-systems",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Software Development :: Libraries :: Application Frameworks",
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+  "build>=1.2",
+  "jsonschema>=4.23",
+  "mypy>=1.15",
+  "pytest>=8.3",
+  "ruff>=0.15",
+  "twine>=6.1",
+]
+
+[project.scripts]
+polyhorizon = "polyhorizon.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/jinsoo96/polyhorizon-engineering"
+Repository = "https://github.com/jinsoo96/polyhorizon-engineering"
+Issues = "https://github.com/jinsoo96/polyhorizon-engineering/issues"
+Documentation = "https://github.com/jinsoo96/polyhorizon-engineering#readme"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["polyhorizon*"]
+
+[tool.setuptools.dynamic]
+version = { attr = "polyhorizon.version.__version__" }
+
+[tool.setuptools.package-data]
+polyhorizon = ["py.typed"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+
+[tool.mypy]
+python_version = "3.11"
+files = ["src/polyhorizon"]
+check_untyped_defs = true
+disallow_any_generics = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+warn_unreachable = true

@@ -1,0 +1,5 @@
+#!/bin/sh
+set -eu
+
+root=$(git rev-parse --show-toplevel) || exit 2
+exec "$root/scripts/run_public_boundary.sh" --pre-push

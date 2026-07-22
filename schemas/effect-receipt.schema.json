@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/jinsoo96/polyhorizon-engineering/main/schemas/effect-receipt.schema.json",
+  "title": "Polyhorizon Effect Receipt v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "api_version",
+    "id",
+    "request_digest",
+    "producer",
+    "status",
+    "evidence_digest",
+    "result_digest",
+    "issued_at"
+  ],
+  "properties": {
+    "api_version": { "const": "polyhorizon.effect/v0.1" },
+    "id": { "$ref": "#/$defs/identifier" },
+    "request_digest": { "$ref": "#/$defs/digest" },
+    "producer": { "$ref": "#/$defs/identifier" },
+    "status": { "enum": ["satisfied", "violated", "unknown", "uncovered"] },
+    "evidence_digest": { "$ref": "#/$defs/digest" },
+    "result_digest": { "$ref": "#/$defs/digest" },
+    "issued_at": { "$ref": "#/$defs/timestamp" },
+    "details": { "type": "object" }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,127}$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?(Z|[+-][0-9]{2}:[0-9]{2})$"
+    }
+  }
+}

@@ -1,0 +1,87 @@
+{
+  "profile": "polyhorizon.engine.v1",
+  "canonical_vectors": [
+    {
+      "name": "empty-object",
+      "domain": "vector.empty",
+      "material": {},
+      "canonical_json": "{}",
+      "digest": "sha256:a6b873e5f7b6b13b01d595135fcefe216bab3df62ed8be7a41d61abc8b58c7e7"
+    },
+    {
+      "name": "unicode-and-key-order",
+      "domain": "vector.unicode",
+      "material": {
+        "z": "호라이즌",
+        "a": [1, true, null]
+      },
+      "canonical_json": "{\"a\":[1,true,null],\"z\":\"호라이즌\"}",
+      "digest": "sha256:5f14e237a0093028c2d59a033f075c585227190ecc6f167cdd92f31f89b37902"
+    },
+    {
+      "name": "unicode-scalar-order-and-escaping",
+      "domain": "unicode-order",
+      "material": {
+        "\ud83d\ude00": "astral",
+        "\ue000": "bmp-private",
+        "control": "line\nquote\""
+      },
+      "canonical_json": "{\"control\":\"line\\nquote\\\"\",\"\ue000\":\"bmp-private\",\"\ud83d\ude00\":\"astral\"}",
+      "digest": "sha256:0fe5218b12a3499dd499085b0f6ede452022fafb60c61f40268abf853ab95417"
+    },
+    {
+      "name": "interoperable-integer-boundary",
+      "domain": "vector.safe-integer",
+      "material": {
+        "maximum": 9007199254740991,
+        "minimum": -9007199254740991
+      },
+      "canonical_json": "{\"maximum\":9007199254740991,\"minimum\":-9007199254740991}",
+      "digest": "sha256:c6037595c8b4135cee06d005552bf636642951b62ff1708518a7bee66c1c7b2a"
+    },
+    {
+      "name": "timestamp-is-data",
+      "domain": "vector.timestamp",
+      "material": {
+        "at": "2026-07-16T03:00:00Z"
+      },
+      "canonical_json": "{\"at\":\"2026-07-16T03:00:00Z\"}",
+      "digest": "sha256:4ab972ed9f3cf61f14aa8e6f42f0d9bb417902bec8a98a3a11384615913df5d4"
+    }
+  ],
+  "manifest_vectors": [
+    {
+      "kind": "charter",
+      "path": "../forge-mutation/charter.v1.json",
+      "digest": "sha256:390d00630b3080233e4892be3bd42d8ac393780c09688e7fff2dbf80c5a082b1"
+    },
+    {
+      "kind": "charter",
+      "path": "../forge-mutation/charter.v1.1-candidate.json",
+      "digest": "sha256:a5dc9ef9ef6680d02adb406d65e335b48bcbe9c0c4af13e99c8325d724111d7a"
+    },
+    {
+      "kind": "proposal",
+      "path": "../forge-mutation/proposal.json",
+      "digest": "sha256:aaa444e7200e85d2d8b5bbc7a4caf45dbc5df31d7aa17270bbd4c147f2ad2919"
+    }
+  ],
+  "effect_receipt_vectors": [
+    {
+      "value": {
+        "api_version": "polyhorizon.effect/v0.1",
+        "id": "receipt.conformance.1",
+        "request_digest": "sha256:d8365c25c1e5124cf72b978308384dcf267b4e11001ddce22b787efd9c03e829",
+        "producer": "ops-observer",
+        "status": "satisfied",
+        "evidence_digest": "sha256:a32aebbe938fe2dd7a40ad6104f014a9f41d9696ba1d20c8907bae7924d901ab",
+        "result_digest": "sha256:d9a7653c2d34af302323d98828d3dcef3993047ac01e009023e22f0894c90b30",
+        "issued_at": "2026-07-16T12:00:00Z",
+        "details": {
+          "non_authoritative_note": "ignored by receipt digest"
+        }
+      },
+      "digest": "sha256:7a1e867ad2347f0558c3cfd0e05a41176ba806bb2a9979dbae1f6b6c25681a18"
+    }
+  ]
+}

@@ -1,0 +1,239 @@
+{
+  "api_version": "polyhorizon.charter/v0.1",
+  "id": "production-forge-charter",
+  "revision": "1.1.0",
+  "description": "Candidate charter proposed by Forge; it shortens the temporal observation horizon.",
+  "principals": [
+    {
+      "id": "governance-root",
+      "trust_domain": "governance",
+      "adapter": "local:governance",
+      "description": "External amendment root outside the Forge control loop."
+    },
+    {
+      "id": "forge-controller",
+      "trust_domain": "forge",
+      "adapter": "local:forge"
+    },
+    {
+      "id": "ops-observer",
+      "trust_domain": "operations",
+      "adapter": "local:telemetry"
+    },
+    {
+      "id": "safety-observer",
+      "trust_domain": "safety",
+      "adapter": "local:safety-case"
+    },
+    {
+      "id": "user-representative",
+      "trust_domain": "affected-users",
+      "adapter": "local:user-panel"
+    },
+    {
+      "id": "rollback-executor",
+      "trust_domain": "recovery",
+      "adapter": "local:rollback"
+    }
+  ],
+  "purposes": [
+    {
+      "id": "safe-self-improvement",
+      "owner": "governance-root",
+      "specification_digest": "sha256:e30456df396ec79b673393857ae9f6b292b3f37d9a1b64c4169b1dfb395a4f03",
+      "description": "Improve the harness without hiding consequences outside the Forge score."
+    }
+  ],
+  "horizons": [
+    {
+      "id": "horizon.authority",
+      "kind": "authority",
+      "owner": "governance-root",
+      "selectors": {
+        "effects": ["forge.*"],
+        "resources": ["harness/*"]
+      },
+      "observers": ["governance-root"],
+      "minimum_trust_domains": 1
+    },
+    {
+      "id": "horizon.causal",
+      "kind": "causal",
+      "owner": "safety-observer",
+      "selectors": {
+        "effects": ["forge.*"],
+        "resources": ["harness/*"]
+      },
+      "observers": ["ops-observer", "safety-observer"],
+      "minimum_trust_domains": 2
+    },
+    {
+      "id": "horizon.epistemic",
+      "kind": "epistemic",
+      "owner": "safety-observer",
+      "selectors": {
+        "effects": ["forge.*"],
+        "resources": ["harness/*"]
+      },
+      "observers": ["ops-observer", "safety-observer"],
+      "minimum_trust_domains": 2
+    },
+    {
+      "id": "horizon.stakeholder",
+      "kind": "stakeholder",
+      "owner": "user-representative",
+      "selectors": {
+        "effects": ["forge.*"],
+        "resources": ["harness/*"]
+      },
+      "observers": ["user-representative"],
+      "minimum_trust_domains": 1
+    },
+    {
+      "id": "horizon.temporal",
+      "kind": "temporal",
+      "owner": "ops-observer",
+      "selectors": {
+        "effects": ["forge.*"],
+        "resources": ["harness/*"]
+      },
+      "observers": ["ops-observer"],
+      "minimum_trust_domains": 1
+    }
+  ],
+  "standings": [
+    {
+      "id": "governors",
+      "representatives": ["governance-root"],
+      "rights": ["right.ratify", "right.veto"]
+    },
+    {
+      "id": "operators",
+      "representatives": ["ops-observer"],
+      "rights": ["right.appeal", "right.rollback"]
+    },
+    {
+      "id": "users",
+      "representatives": ["user-representative"],
+      "rights": ["right.appeal", "right.explanation", "right.exit"]
+    }
+  ],
+  "recourses": [
+    {
+      "id": "rollback-governors",
+      "standing_id": "governors",
+      "owner": "governance-root",
+      "executor": "rollback-executor",
+      "mechanism": "automatic.rollback",
+      "applies_to": ["compensatable", "irreversible"],
+      "deadline_seconds": 3600
+    },
+    {
+      "id": "rollback-operators",
+      "standing_id": "operators",
+      "owner": "governance-root",
+      "executor": "rollback-executor",
+      "mechanism": "automatic.rollback",
+      "applies_to": ["compensatable", "irreversible"],
+      "deadline_seconds": 3600
+    },
+    {
+      "id": "rollback-users",
+      "standing_id": "users",
+      "owner": "governance-root",
+      "executor": "rollback-executor",
+      "mechanism": "automatic.rollback",
+      "applies_to": ["compensatable", "irreversible"],
+      "deadline_seconds": 3600
+    }
+  ],
+  "obligations": [
+    {
+      "id": "obligation.authorized-change",
+      "horizon_id": "horizon.authority",
+      "bearer": "forge-controller",
+      "beneficiary": "governors",
+      "predicate": "predicate.change-authorized",
+      "mode": "hard",
+      "selectors": {
+        "effects": ["forge.*"],
+        "resources": ["harness/*"]
+      },
+      "recourse_ids": ["rollback-governors"],
+      "observer_ids": ["governance-root"]
+    },
+    {
+      "id": "obligation.causal-isolation",
+      "horizon_id": "horizon.causal",
+      "bearer": "forge-controller",
+      "beneficiary": "users",
+      "predicate": "predicate.no-cross-service-regression",
+      "mode": "hard",
+      "selectors": {
+        "effects": ["forge.*"],
+        "resources": ["harness/*"]
+      },
+      "recourse_ids": ["rollback-users"],
+      "observer_ids": ["ops-observer", "safety-observer"]
+    },
+    {
+      "id": "obligation.evidence-complete",
+      "horizon_id": "horizon.epistemic",
+      "bearer": "forge-controller",
+      "beneficiary": "operators",
+      "predicate": "predicate.heldout-evidence-complete",
+      "mode": "review",
+      "selectors": {
+        "effects": ["forge.*"],
+        "resources": ["harness/*"]
+      },
+      "recourse_ids": ["rollback-operators"],
+      "observer_ids": ["ops-observer", "safety-observer"]
+    },
+    {
+      "id": "obligation.no-user-regression",
+      "horizon_id": "horizon.stakeholder",
+      "bearer": "forge-controller",
+      "beneficiary": "users",
+      "predicate": "predicate.no-material-user-regression",
+      "mode": "hard",
+      "selectors": {
+        "effects": ["forge.*"],
+        "resources": ["harness/*"]
+      },
+      "recourse_ids": ["rollback-users"],
+      "observer_ids": ["user-representative"]
+    },
+    {
+      "id": "obligation.rollback-window",
+      "horizon_id": "horizon.temporal",
+      "bearer": "forge-controller",
+      "beneficiary": "operators",
+      "predicate": "predicate.rollback-window-30m",
+      "mode": "hard",
+      "selectors": {
+        "effects": ["forge.*"],
+        "resources": ["harness/*"]
+      },
+      "recourse_ids": ["rollback-operators"],
+      "observer_ids": ["ops-observer"]
+    }
+  ],
+  "mandates": [
+    {
+      "id": "mandate.forge-production",
+      "issuer": "governance-root",
+      "principal": "forge-controller",
+      "actions": ["forge.*"],
+      "resources": ["harness/*"],
+      "issued_at": "2026-01-01T00:00:00Z",
+      "expires_at": "2099-01-01T00:00:00Z",
+      "allow_amendment": true
+    }
+  ],
+  "amendment": {
+    "approver_standings": ["governors", "operators", "users"],
+    "minimum_standings": 2,
+    "root_principal": "governance-root"
+  }
+}

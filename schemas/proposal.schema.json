@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/jinsoo96/polyhorizon-engineering/main/schemas/proposal.schema.json",
+  "title": "Polyhorizon Proposal v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "api_version",
+    "id",
+    "actor",
+    "action",
+    "claims",
+    "reversibility",
+    "artifact_digest",
+    "base_charter_digest",
+    "issued_at",
+    "expires_at",
+    "idempotency_key"
+  ],
+  "properties": {
+    "api_version": { "const": "polyhorizon.proposal/v0.1" },
+    "id": { "$ref": "#/$defs/identifier" },
+    "actor": { "$ref": "#/$defs/identifier" },
+    "action": { "$ref": "#/$defs/identifier" },
+    "claims": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/claim" }
+    },
+    "reversibility": {
+      "enum": ["reversible", "compensatable", "irreversible"]
+    },
+    "artifact_digest": { "$ref": "#/$defs/digest" },
+    "base_charter_digest": { "$ref": "#/$defs/digest" },
+    "candidate_charter_digest": {
+      "oneOf": [
+        { "$ref": "#/$defs/digest" },
+        { "type": "null" }
+      ]
+    },
+    "ledger_root_digest": {
+      "oneOf": [
+        { "$ref": "#/$defs/digest" },
+        { "type": "null" }
+      ]
+    },
+    "issued_at": { "$ref": "#/$defs/timestamp" },
+    "expires_at": { "$ref": "#/$defs/timestamp" },
+    "idempotency_key": { "$ref": "#/$defs/identifier" }
+  },
+  "allOf": [
+    {
+      "if": {
+        "required": ["candidate_charter_digest"],
+        "properties": {
+          "candidate_charter_digest": { "$ref": "#/$defs/digest" }
+        }
+      },
+      "then": {
+        "required": ["ledger_root_digest"],
+        "properties": {
+          "ledger_root_digest": { "$ref": "#/$defs/digest" }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,127}$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?(Z|[+-][0-9]{2}:[0-9]{2})$"
+    },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "effect", "resource", "horizons", "standings"],
+      "properties": {
+        "id": { "$ref": "#/$defs/identifier" },
+        "effect": { "$ref": "#/$defs/identifier" },
+        "resource": { "$ref": "#/$defs/identifier" },
+        "horizons": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/identifier" }
+        },
+        "standings": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/identifier" }
+        }
+      }
+    }
+  }
+}

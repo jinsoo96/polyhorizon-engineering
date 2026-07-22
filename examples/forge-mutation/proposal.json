@@ -1,0 +1,29 @@
+{
+  "api_version": "polyhorizon.proposal/v0.1",
+  "id": "proposal.forge-production-router-v2",
+  "actor": "forge-controller",
+  "action": "forge.mutate",
+  "claims": [
+    {
+      "id": "claim.router-policy-and-observation-window",
+      "effect": "forge.policy.mutate",
+      "resource": "harness/production-router",
+      "horizons": [
+        "horizon.authority",
+        "horizon.causal",
+        "horizon.epistemic",
+        "horizon.stakeholder",
+        "horizon.temporal"
+      ],
+      "standings": ["governors", "operators", "users"]
+    }
+  ],
+  "reversibility": "compensatable",
+  "artifact_digest": "sha256:20a77c6fa92611d0b387711443a2d2469cf22bb6a22fce4c3b8a4564c1a511f2",
+  "base_charter_digest": "sha256:390d00630b3080233e4892be3bd42d8ac393780c09688e7fff2dbf80c5a082b1",
+  "candidate_charter_digest": "sha256:a5dc9ef9ef6680d02adb406d65e335b48bcbe9c0c4af13e99c8325d724111d7a",
+  "ledger_root_digest": "sha256:407ac4e9427ad9c2f0a6be15f186f8a00ed5eb6d3e6486c0e1c9bcd245136425",
+  "issued_at": "2026-01-01T00:00:00Z",
+  "expires_at": "2099-01-01T00:00:00Z",
+  "idempotency_key": "forge-production-router-v2"
+}
